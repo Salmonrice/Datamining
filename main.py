@@ -47,6 +47,7 @@ request.form.get('gender')
 
 '''
 
+'''
 class Output():
     def __init__(self):
 
@@ -63,4 +64,4 @@ class Output():
         self.gender = gender
 
 
-
+'''
