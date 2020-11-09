@@ -1,37 +1,28 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-
-dataset = pd.read_csv('data.csv')
-
-
-print(dataset.head())
-
-X = dataset.drop('class', axis = 1).values
-y = dataset['class'].values
-
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20,random_state=101)
-
-print(X_test[1])
-
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import KFold
 from sklearn.linear_model import LogisticRegression
 
-lr = LogisticRegression(C=1.0, random_state=1)
-lr.fit(X_train, y_train)
-lr_pred = lr.predict(X_test)
+dataset = pd.read_csv('dataset-dummy.csv')
+print(dataset.head())
 
-classifier = KNeighborsClassifier(n_neighbors=5)
-classifier.fit(X_train, y_train)
+X = dataset.drop('lable', axis = 1).values
+y = dataset['lable'].values
 
-y_pred = classifier.predict(X_test)
+# K Fold
+def get_score(model, X_train, X_test, y_train, y_test):
+    model.fit(X_train, y_train)
+    return model.score(X_test, y_test)
 
-from sklearn.metrics import classification_report, confusion_matrix
-print(confusion_matrix(y_test, y_pred))
-print(classification_report(y_test, y_pred))
+lr = LogisticRegression()
 
-print(classifier.predict([[6,148,72,35,0,33.6,0.627,50]]))
+kf = KFold(n_splits=10)
+scores_logistic = []
+for train_index, test_index in kf.split(X,y):
+    X_train, X_test, y_train, y_test = X[train_index] , X[test_index] , y[train_index] , y[test_index]
+    lr.fit(X_train,y_train)
+    scores_logistic.append(lr.score(X_test,y_test))
 
-print(confusion_matrix(y_test, lr_pred))
-print(classification_report(y_test, lr_pred))
+print(scores_logistic)
+
+
+print(lr.predict([[1.0,.0,.0,.0,1.0,.0,.0,1.0,.0,.0,1.0,1.0,.0,1.0,.0,.0,1.0,1.0,.0,1.0,.0,1.0,.0,.0,1.0,.0,.0,.0,.0,.0,.0,1.0,.0,.0]]))
