@@ -1,6 +1,6 @@
 from flask import Flask , render_template
-from forms import InputForm
 from flask import request
+from Class import Output
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
@@ -10,11 +10,11 @@ app.config['SECRET_KEY'] = 'you-will-never-guess'
 def index():
     return render_template('base.html')
 
-
 @app.route('/input', methods = ['GET','POST'])
 def input():
     if request.method == 'POST':
         output = Output(request.form.get('friend'),
+                        request.form.get('price'),
                         request.form.get('utilization'),
                         request.form.get('exclusive'),
                         request.form.get('cheaper'),
@@ -23,9 +23,12 @@ def input():
                         request.form.get('longterm'),
                         request.form.get('service'),
                         request.form.get('spend'),
-                        request.form.get('gender')),
+                        request.form.get('gender'),
+                        request.form.get('year'))
+        output.train()
         output.pred()
-        return render_template('inputform.html' , output=output)
+        print('output')
+        return render_template('output.html' , output=output)
     return render_template('inputform.html')
 
 
@@ -44,24 +47,5 @@ request.form.get('longterm')
 request.form.get('service')
 request.form.get('spend')
 request.form.get('gender')
-
-'''
-
-'''
-class Output():
-    def __init__(self):
-
-    def setup(self, friend , utilization , exclusive , cheaper , anticheat , problem , longterm , service , spend , gender):
-        self.friend = friend
-        self.utilization = utilization
-        self.exclusive = exclusive
-        self.cheaper = cheaper
-        self.anticheat = anticheat
-        self.problem = problem
-        self.longterm = longterm
-        self.service = service
-        self.spend = spend
-        self.gender = gender
-
 
 '''
